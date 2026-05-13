@@ -36,6 +36,7 @@ x86/bin/mkdir \
 x86/bin/replace \
 x86/bin/rm \
 x86/bin/sha256sum \
+x86/bin/bake \
 x86/bin/ungz \
 x86/bin/unbz2 \
 x86/bin/unxz \
