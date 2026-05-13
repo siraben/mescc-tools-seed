@@ -93,6 +93,24 @@ Regenerate-amd64-cc-from-gas:
 
 Regenerate-amd64-gas: Regenerate-amd64-M0-from-gas Regenerate-amd64-cc-from-gas
 
+Regenerate-riscv32-M0-from-gas:
+	./tools/gas-to-hex.py --architecture riscv32 \
+		--linker-script riscv32/GAS/stage0-riscv32.ld \
+		--start-label _start --end-label ELF_end \
+		--input riscv32/GAS/M0_riscv32.S \
+		--output riscv32/M0_riscv32.hex2
+
+Regenerate-riscv32-gas: Regenerate-riscv32-M0-from-gas
+
+Regenerate-riscv64-M0-from-gas:
+	./tools/gas-to-hex.py --architecture riscv64 \
+		--linker-script riscv64/GAS/stage0-riscv64.ld \
+		--start-label _start --end-label ELF_end \
+		--input riscv64/GAS/M0_riscv64.S \
+		--output riscv64/M0_riscv64.hex2
+
+Regenerate-riscv64-gas: Regenerate-riscv64-M0-from-gas
+
 Generate-aarch64-answers:
 	sha256sum AArch64/bin/blood-elf \
 AArch64/bin/catm \

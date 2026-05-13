@@ -5,6 +5,7 @@
 
 import argparse
 import pathlib
+import shutil
 import subprocess
 import tempfile
 
@@ -23,18 +24,49 @@ ARCHES = {
         "ld": ["aarch64-linux-gnu-ld"],
     },
     "riscv32": {
-        "as": ["riscv32-linux-gnu-as", "-march=rv32imac", "-mabi=ilp32"],
-        "ld": ["riscv32-linux-gnu-ld", "-melf32lriscv"],
+        "as": [
+            ["riscv32-linux-gnu-as", "-march=rv32ima", "-mabi=ilp32"],
+            ["riscv32-unknown-linux-gnu-as", "-march=rv32ima", "-mabi=ilp32"],
+        ],
+        "ld": [
+            ["riscv32-linux-gnu-ld", "--no-relax", "-melf32lriscv"],
+            ["riscv32-unknown-linux-gnu-ld", "--no-relax", "-melf32lriscv"],
+        ],
+        "objcopy": [
+            ["riscv32-linux-gnu-objcopy"],
+            ["riscv32-unknown-linux-gnu-objcopy"],
+        ],
     },
     "riscv64": {
-        "as": ["riscv64-linux-gnu-as", "-march=rv64imac", "-mabi=lp64"],
-        "ld": ["riscv64-linux-gnu-ld", "-melf64lriscv"],
+        "as": [
+            ["riscv64-linux-gnu-as", "-march=rv64ima", "-mabi=lp64"],
+            ["riscv64-unknown-linux-gnu-as", "-march=rv64ima", "-mabi=lp64"],
+        ],
+        "ld": [
+            ["riscv64-linux-gnu-ld", "--no-relax", "-melf64lriscv"],
+            ["riscv64-unknown-linux-gnu-ld", "--no-relax", "-melf64lriscv"],
+        ],
+        "objcopy": [
+            ["riscv64-linux-gnu-objcopy"],
+            ["riscv64-unknown-linux-gnu-objcopy"],
+        ],
     },
 }
 
 
 def run(command):
     subprocess.run(command, check=True)
+
+
+def resolve_command(command):
+    if not command:
+        raise ValueError("empty command")
+    if isinstance(command[0], list):
+        for candidate in command:
+            if shutil.which(candidate[0]):
+                return candidate
+        raise FileNotFoundError("none of these tools were found: " + ", ".join(c[0] for c in command))
+    return command
 
 
 def emit_hex(data, width):
@@ -82,14 +114,17 @@ def main():
     args = parser.parse_args()
 
     commands = ARCHES[args.architecture]
+    assembler = resolve_command(commands["as"])
+    linker = resolve_command(commands["ld"])
+    objcopy_command = resolve_command(commands.get("objcopy", ["objcopy"]))
     with tempfile.TemporaryDirectory() as td:
         tmp = pathlib.Path(td)
         obj = tmp / "input.o"
         elf = tmp / "input"
         raw = tmp / "input.bin"
 
-        run(commands["as"] + [str(args.input), "-o", str(obj)])
-        ld = commands["ld"]
+        run(assembler + [str(args.input), "-o", str(obj)])
+        ld = linker
         if args.linker_script:
             ld = ld + ["-T", str(args.linker_script)]
         if args.text_address:
@@ -98,7 +133,7 @@ def main():
         if args.whole_elf:
             data = elf.read_bytes()
         else:
-            objcopy = ["objcopy", "-O", "binary"]
+            objcopy = objcopy_command + ["-O", "binary"]
             if args.section:
                 objcopy = objcopy + ["-j", args.section]
             run(objcopy + [str(elf), str(raw)])
