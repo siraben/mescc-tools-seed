@@ -62,6 +62,21 @@ AMD64/bin/unbz2 \
 AMD64/bin/unxz \
 AMD64/bin/untar >| amd64.answers
 
+Regenerate-amd64-M0-from-gas:
+	./tools/gas-to-hex.py --architecture amd64 --section .text \
+		--start-label _start --end-label ELF_end \
+		--input AMD64/GAS/M0_amd64.S \
+		--output AMD64/M0_AMD64.hex2
+
+Regenerate-amd64-cc-from-gas:
+	./tools/gas-to-hex.py --architecture amd64 \
+		--linker-script AMD64/GAS/stage0-amd64.ld \
+		--start-label _start --end-label ELF_end \
+		--input AMD64/GAS/cc_amd64.S \
+		--output AMD64/cc_amd64.hex2
+
+Regenerate-amd64-gas: Regenerate-amd64-M0-from-gas Regenerate-amd64-cc-from-gas
+
 Generate-aarch64-answers:
 	sha256sum AArch64/bin/blood-elf \
 AArch64/bin/catm \
