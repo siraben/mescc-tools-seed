@@ -62,6 +62,22 @@ AMD64/bin/unbz2 \
 AMD64/bin/unxz \
 AMD64/bin/untar >| amd64.answers
 
+Regenerate-x86-M0-from-gas:
+	./tools/gas-to-hex.py --architecture x86 \
+		--linker-script x86/GAS/stage0-x86.ld \
+		--start-label _start --end-label ELF_end \
+		--input x86/GAS/M0_x86.S \
+		--output x86/M0_x86.hex2
+
+Regenerate-x86-cc-from-gas:
+	./tools/gas-to-hex.py --architecture x86 \
+		--linker-script x86/GAS/stage0-x86.ld \
+		--start-label _start --end-label ELF_end \
+		--input x86/GAS/cc_x86.S \
+		--output x86/cc_x86.hex2
+
+Regenerate-x86-gas: Regenerate-x86-M0-from-gas Regenerate-x86-cc-from-gas
+
 Regenerate-amd64-M0-from-gas:
 	./tools/gas-to-hex.py --architecture amd64 --section .text \
 		--start-label _start --end-label ELF_end \
