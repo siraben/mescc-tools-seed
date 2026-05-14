@@ -31,6 +31,6 @@
 ./x86/artifact/kaem-0 ./x86/mescc-tools-mini-kaem.kaem
 
 #######################################
-# Run remaining phases with full kaem #
+# Run remaining phases with bake      #
 #######################################
-./x86/bin/kaem --verbose --strict --file ./x86/kaem.run
+./x86/bin/bake --file ./x86/bootstrap.bake all
