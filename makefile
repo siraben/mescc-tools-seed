@@ -27,7 +27,6 @@ x86/bin/chmod \
 x86/bin/cp \
 x86/bin/get_machine \
 x86/bin/hex2 \
-x86/bin/kaem \
 x86/bin/M1 \
 x86/bin/M2-Mesoplanet \
 x86/bin/M2-Planet \
@@ -49,7 +48,6 @@ AMD64/bin/chmod \
 AMD64/bin/cp \
 AMD64/bin/get_machine \
 AMD64/bin/hex2 \
-AMD64/bin/kaem \
 AMD64/bin/M1 \
 AMD64/bin/M2-Mesoplanet \
 AMD64/bin/M2-Planet \
@@ -58,6 +56,7 @@ AMD64/bin/mkdir \
 AMD64/bin/replace \
 AMD64/bin/rm \
 AMD64/bin/sha256sum \
+AMD64/bin/bake \
 AMD64/bin/ungz \
 AMD64/bin/unbz2 \
 AMD64/bin/unxz \
@@ -70,7 +69,6 @@ AArch64/bin/chmod \
 AArch64/bin/cp \
 AArch64/bin/get_machine \
 AArch64/bin/hex2 \
-AArch64/bin/kaem \
 AArch64/bin/M1 \
 AArch64/bin/M2-Mesoplanet \
 AArch64/bin/M2-Planet \
@@ -79,6 +77,7 @@ AArch64/bin/mkdir \
 AArch64/bin/replace \
 AArch64/bin/rm \
 AArch64/bin/sha256sum \
+AArch64/bin/bake \
 AArch64/bin/ungz \
 AArch64/bin/unbz2 \
 AArch64/bin/unxz \
@@ -91,7 +90,6 @@ riscv32/bin/chmod \
 riscv32/bin/cp \
 riscv32/bin/get_machine \
 riscv32/bin/hex2 \
-riscv32/bin/kaem \
 riscv32/bin/M1 \
 riscv32/bin/M2-Mesoplanet \
 riscv32/bin/M2-Planet \
@@ -100,6 +98,7 @@ riscv32/bin/mkdir \
 riscv32/bin/replace \
 riscv32/bin/rm \
 riscv32/bin/sha256sum \
+riscv32/bin/bake \
 riscv32/bin/ungz \
 riscv32/bin/unbz2 \
 riscv32/bin/unxz \
@@ -112,7 +111,6 @@ riscv64/bin/chmod \
 riscv64/bin/cp \
 riscv64/bin/get_machine \
 riscv64/bin/hex2 \
-riscv64/bin/kaem \
 riscv64/bin/M1 \
 riscv64/bin/M2-Mesoplanet \
 riscv64/bin/M2-Planet \
@@ -121,6 +119,7 @@ riscv64/bin/mkdir \
 riscv64/bin/replace \
 riscv64/bin/rm \
 riscv64/bin/sha256sum \
+riscv64/bin/bake \
 riscv64/bin/ungz \
 riscv64/bin/unbz2 \
 riscv64/bin/unxz \

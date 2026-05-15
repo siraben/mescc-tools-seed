@@ -31,6 +31,6 @@
 ./AMD64/artifact/kaem-0 ./AMD64/mescc-tools-mini-kaem.kaem
 
 #######################################
-# Run remaining phases with full kaem #
+# Run remaining phases with bake      #
 #######################################
-./AMD64/bin/kaem --verbose --strict --file ./AMD64/kaem.run
+./AMD64/bin/bake --file ./bootstrap.amd64.bake all

@@ -33,4 +33,4 @@
 #######################################
 # Run remaining phases with bake      #
 #######################################
-./x86/bin/bake --file ./x86/bootstrap.bake all
+./x86/bin/bake --file ./bootstrap.x86.bake all

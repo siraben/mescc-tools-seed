@@ -25,7 +25,7 @@ It bootstraps all these from a single 256 byte seed (which you will find in the
 folder bootstrap-seeds). The ultimate goal is for this to bootstrap all the way
 up to GCC. Thanks to the wonderful people on #bootstrappable and their hard work
 https://github.com/fosslinux/live-bootstrap it is done. Everything you need to
-go from Hex0 to GCC+Guile is just a kaem.run away.
+go from Hex0 to GCC+Guile is just a bake file away.
 
 There is only one "missing" part that is not bootstrappable from the hex0 seed; a
 kernel. This issue was solved in live-bootstrap thanks to the wonderful work done
@@ -60,8 +60,8 @@ The C code matching its behavior is in "High\ Level\ Prototypes/kaem-minimal.c"
 It should only be used for the first stages of the bootstrap process.
 
 The bootstrappable effort is all about trust. You should verify each of these
-programs, from the hex0 monitor up to mes-m2, along with the kaem seed and the
-kaem.run files if you can. There are some efforts to attempt to make it easier
+programs, from the hex0 monitor up to mes-m2, along with the minimal kaem seed
+and the bake files if you can. There are some efforts to attempt to make it easier
 to verify these binaries. This is done primarily by re-writing the lowest level
 programs in assembly, so that you can recompile them, checking the hashes
 match. If they do, verify only the higher-level source since you know that
@@ -72,7 +72,7 @@ This repository utilizes submodules, so you need to clone this repository using
 --init` or after a pull be sure to do: git submodule update --recursive
 
 Note that this README may not answer all your questions. If you are still left
-wondering things like What is a kaem.run?, see the other repositories readme's
+wondering how each stage is run, see the other repositories readme's
 which might answer some more tool-specific questions.
 
 We hang out on the libera.chat IRC network in the #bootstrappable channel.
@@ -81,13 +81,10 @@ https://github.com/oriansj/talk-notes/blob/master/bootstrappable.org
 
 ## How does this process work?
 
-It is highly recommended that after reading this you go through the kaem.run for
-your architecture and see each of these steps in action. Note that the kaem.run
-is split into two kaem files to make it simpler to grasp. These two files are
-mescc-tools-mini-kaem.kaem for Phase 0-9 (uses the simple kaem),
-mescc-tools-full-kaem.kaem for Phase 10-12 (uses the full kaem for the rest of
-mescc-tools) and mes-m2.kaem for Phase 13, contained in the same folder as
-kaem.run.
+It is highly recommended that after reading this you go through the bootstrap
+file for your architecture and see each of these steps in action. The initial
+phase uses mescc-tools-mini-kaem.kaem to build bake, then bootstrap.*.bake runs
+the remaining stage0 steps.
 
 ALL of these steps have a NASM or GAS version in the NASM/ or GAS/ subdirectory
 of the folder for the architecture.
@@ -189,7 +186,7 @@ features provided by M2libc and M2-Planet to enable significantly faster builds.
 
 ### Phase 11: Build kaem
 
-kaem is what was being used to run kaem.run scripts, and is useful for
+the minimal kaem seed is what runs the first script, and is useful for
 later stages of the bootstrap process outside this repository.
 
 ### Phase 12: Build blood-elf implementation in M2-Planet
@@ -271,9 +268,9 @@ supported) and replaces it with the desired replacement.
 If you need a chroot or to isolate what you are doing; wrap is the first tool
 available for that job and does it well enough to get you quite far.
 
-### Phase 28: after.kaem
+### Phase 28: after.bake
 
-after.kaem exists for you to replace with anything you want to kick off your
+after.bake exists for you to replace with anything you want to kick off your
 bootstrap chain.
 
 Enjoy

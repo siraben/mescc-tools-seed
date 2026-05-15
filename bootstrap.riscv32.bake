@@ -1,0 +1,9 @@
+: all
+= ARCH riscv32
+= ARCH_DIR riscv32
+= BLOOD_FLAG
+= BASE_ADDRESS 0x00600000
+= ENDIAN_FLAG --little-endian
+= ANSWERS riscv32.answers
+= SIGNAL_HEADER ./M2libc/signal.h
+./${ARCH_DIR}/bin/bake --file bootstrap.common.bake all

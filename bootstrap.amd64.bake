@@ -1,0 +1,9 @@
+: all
+= ARCH amd64
+= ARCH_DIR AMD64
+= BLOOD_FLAG --64
+= BASE_ADDRESS 0x00600000
+= ENDIAN_FLAG --little-endian
+= ANSWERS amd64.answers
+= SIGNAL_HEADER
+./${ARCH_DIR}/bin/bake --file bootstrap.common.bake all

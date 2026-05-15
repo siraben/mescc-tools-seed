@@ -31,6 +31,6 @@
 ./riscv64/artifact/kaem-0 ./riscv64/mescc-tools-mini-kaem.kaem
 
 #######################################
-# Run remaining phases with full kaem #
+# Run remaining phases with bake      #
 #######################################
-./riscv64/bin/kaem --verbose --strict --file ./riscv64/kaem.run
+./riscv64/bin/bake --file ./bootstrap.riscv64.bake all

@@ -1,0 +1,23 @@
+: all mescc-tools-full mescc-tools-extra check after
+
+= M2LIBC ../M2libc
+= TOOLS ../${ARCH_DIR}/bin
+= BINDIR ../${ARCH_DIR}/bin
+= BUILDDIR ../${ARCH_DIR}/artifact
+= TMPDIR ../${ARCH_DIR}/artifact
+= OPERATING_SYSTEM Linux
+
+: mescc-tools-full
+./${ARCH_DIR}/bin/bake --file mescc-tools-full.bake all
+
+: mescc-tools-extra mescc-tools-full
+export TMPDIR ${TMPDIR}
+cd mescc-tools-extra
+${BINDIR}/bake --file mescc-tools-extra.bake all
+cd ..
+
+: check mescc-tools-extra
+./${ARCH_DIR}/bin/sha256sum -c ${ANSWERS}
+
+: after check
+./${ARCH_DIR}/bin/bake --file ./after.bake all
