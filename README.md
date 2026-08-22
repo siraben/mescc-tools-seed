@@ -21,11 +21,12 @@ following:
   - sha256sum
 - M2-Planet (https://github.com/oriansj/M2-Planet)
 
-It bootstraps all these from a single 256 byte seed (which you will find in the
-folder bootstrap-seeds). The ultimate goal is for this to bootstrap all the way
-up to GCC. Thanks to the wonderful people on #bootstrappable and their hard work
-https://github.com/fosslinux/live-bootstrap it is done. Everything you need to
-go from Hex0 to GCC+Guile is just a kaem.run away.
+It bootstraps all these from a tiny hex0 seed (a few hundred bytes at most,
+which you will find in the folder bootstrap-seeds). The ultimate goal is for
+this to bootstrap all the way up to GCC. Thanks to the wonderful people on
+#bootstrappable and their hard work https://github.com/fosslinux/live-bootstrap
+it is done. Everything you need to go from Hex0 to GCC+Guile is just a kaem.run
+away.
 
 There is only one "missing" part that is not bootstrappable from the hex0 seed; a
 kernel. This issue was solved in live-bootstrap thanks to the wonderful work done
@@ -41,7 +42,7 @@ run the following command matching your architecture:
 `bootstrap-seeds/POSIX/AArch64/kaem-optional-seed`
 `bootstrap-seeds/POSIX/riscv32/kaem-optional-seed`
 `bootstrap-seeds/POSIX/riscv64/kaem-optional-seed`
-This uses the kaem seed rather then relying on your shell.
+This uses the kaem seed rather than relying on your shell.
 
 At this stage of the bootstrap process we use a very minimal kaem. It does not
 support all of the same arguments and features as full kaem.
@@ -52,11 +53,11 @@ Does support:
 Does not support:
  - `--verbose` (forced ON)
  - `--strict` (forced ON)
- - `-f` (remove -f file should be first argument if any)
+ - `-f` (not supported; pass the file to run as the first argument instead)
  - cd
  - set
  - etc etc etc
-The C code matching its behavior is in "High\ Level\ Prototypes/kaem-minimal.c"
+The C code matching its behavior is in `High Level Prototypes/kaem-minimal.c`
 It should only be used for the first stages of the bootstrap process.
 
 The bootstrappable effort is all about trust. You should verify each of these
@@ -82,12 +83,13 @@ https://github.com/oriansj/talk-notes/blob/master/bootstrappable.org
 ## How does this process work?
 
 It is highly recommended that after reading this you go through the kaem.run for
-your architecture and see each of these steps in action. Note that the kaem.run
-is split into two kaem files to make it simpler to grasp. These two files are
-mescc-tools-mini-kaem.kaem for Phase 0-9 (uses the simple kaem),
-mescc-tools-full-kaem.kaem for Phase 10-12 (uses the full kaem for the rest of
-mescc-tools) and mes-m2.kaem for Phase 13, contained in the same folder as
-kaem.run.
+your architecture and see each of these steps in action. Note that the process
+is split into several kaem files to make it simpler to grasp:
+`mescc-tools-seed-kaem.kaem` for Phase 0 (uses the kaem seed),
+`mescc-tools-mini-kaem.kaem` for Phases 1-11 (uses the minimal kaem),
+`mescc-tools-full-kaem.kaem` for Phases 12-15 (uses the full kaem for the rest of
+mescc-tools) and `mescc-tools-extra.kaem` for Phases 16-28 (found in the
+mescc-tools-extra submodule).
 
 ALL of these steps have a NASM or GAS version in the NASM/ or GAS/ subdirectory
 of the folder for the architecture.
@@ -107,13 +109,6 @@ hex1 is a more advanced version of hex0 with support for single
 character labels and a single size of relational jumps (hex0 has no
 support for labels or calculated relational jumps).
 
-#### Phase 1b: Build catm from Phase 0 hex0
-
-catm is a program removing the need for cat or redirection by
-implementing equivalent functionality; e.g. `cat input1 input2
-... inputN > output_file` would be replaced by `catm output_file
-input1 input2 ... inputN`
-
 ### Phase 2: Build hex2-0 from hex1
 
 hex2 is the final version of the hex* series adding support for long
@@ -122,6 +117,13 @@ for later parts of the bootstrap. However for now we are only building
 a basic version to make the process simpler, hence the -0 on the end
 of the name; as this hex2 only works for the single host architecture
 it was built upon.
+
+#### Phase 2b: Build catm from hex2
+
+catm is a program removing the need for cat or redirection by
+implementing equivalent functionality; e.g. `cat input1 input2
+... inputN > output_file` would be replaced by `catm output_file
+input1 input2 ... inputN`
 
 ### Phase 3: Build M0 from Phase 2 hex2-0
 
@@ -192,86 +194,92 @@ features provided by M2libc and M2-Planet to enable significantly faster builds.
 kaem is what was being used to run kaem.run scripts, and is useful for
 later stages of the bootstrap process outside this repository.
 
-### Phase 12: Build blood-elf implementation in M2-Planet
+### Phase 12: Build M2-Mesoplanet from M2-Planet
+
+M2-Mesoplanet (Macro Expander Saving Our m2-PLANET) adds a C
+preprocessor on top of M2-Planet, imitating gcc's behaviour; it is
+used to build the remaining tools.
+
+### Phase 13: Build blood-elf implementation in M2-Planet
 
 blood-elf was discussed earlier and now can be used properly to create
 debuggable programs with ELF headers.
 
-### Phase 13: Build get_machine
+### Phase 14: Build get_machine
 
 get_machine finds the architecture of the system it is running on,
 used for architecture dependent scripts used later in the bootstrap
 process.
 
-### Phase 14: Build M2-Planet from M2-Planet
+### Phase 15: Build M2-Planet from M2-Planet
 
 This is the same M2-Planet as discussed earlier, it just is built
 using itself and so is going to work more quickly and reliably.
 
-### Phase 15: Build sha256sum
+### Phase 16: Build sha256sum
 
 sha256sum is used for giving us a cryptographically signed build chain.
 
-### Phase 16: Build match
+### Phase 17: Build match
 
 match compares two strings. This allows to write architecture specific
 conditional code in kaem scripts.
 
-### Phase 17: build mkdir
+### Phase 18: Build mkdir
 
 To eliminate the need to premake directories in live-bootstrap.
 
-### Phase 18: Build untar
+### Phase 19: Build untar
 
 untar enables stage0-posix to unpack source tarballs so that git submodules are
 not needed to further extend stage0-posix to achieve GCC+Linux.
 
-### Phase 19: Build ungz
+### Phase 20: Build ungz
 
 ungz enables the decompressing of .tar.gz tarballs such as Gnu Mes. Thus
 enabling source tarballs on hosts that don't distribute uncompressed tarballs.
 
-### Phase 20: Build unbz2
+### Phase 21: Build unbz2
 
 Similar to ungz, unbz2 enables the decompressing of .tar.bz2 tarballs.
 
-### Phase 21: Build unxz
+### Phase 22: Build unxz
 
 Similar to ungz, unxz enables the decompressing of .tar.xz tarballs.
 
-### Phase 22: Build catm
+### Phase 23: Build catm
 
 catm is a simple tool that provides the functionality of:
 cat file1 file2 ... fileN >| output in environments where pipes and I/O
 redirection doesn't exist. With slightly unique syntax:
 catm output file1 file2 ... fileN
 
-### Phase 23: build primitive cp
+### Phase 24: Build primitive cp
 
 This primitive version of cp simply copies the contents of the file but does NOT
 copy the file permissions or any other STAT information.
 
-### Phase 24: build chmod
+### Phase 25: Build chmod
 
 To fix up the permissions, of any binaries you used the primitive cp command to
 move, chmod is included.
 
-### Phase 25: build rm
+### Phase 26: Build rm
 
-Enable the deletion of files folders (Essential if disk constrained)
+Enable the deletion of files and folders (Essential if disk constrained)
 
-### Phase 26: build replace
+### Phase 27: Build replace
 
 A primitive sed replacement; which is limited to a single search and replace
-which files all instances of a given pattern of characters in a file (No regex
+which finds all instances of a given pattern of characters in a file (No regex
 supported) and replaces it with the desired replacement.
 
-### Phase 27: build wrap
+### Phase 28: Build wrap
 
 If you need a chroot or to isolate what you are doing; wrap is the first tool
 available for that job and does it well enough to get you quite far.
 
-### Phase 28: after.kaem
+### Phase 29: after.kaem
 
 after.kaem exists for you to replace with anything you want to kick off your
 bootstrap chain.

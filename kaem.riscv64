@@ -21,7 +21,7 @@
 
 
 # Can also be run by kaem or any other shell of your personal choice
-# To run in kaem simply: kaem --verbose --strict
+# To run in kaem simply: kaem --verbose --strict --file kaem.riscv64
 
 ##################################################
 # Phase 0-11 Build hex0 from bootstrapped binary #
