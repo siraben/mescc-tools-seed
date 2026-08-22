@@ -39,6 +39,11 @@ pushd AArch64
 git clean -xdf
 popd
 
+# clean up after armv7l
+pushd armv7l
+git clean -xdf
+popd
+
 # clean up after riscv32
 pushd riscv32
 git clean -xdf
